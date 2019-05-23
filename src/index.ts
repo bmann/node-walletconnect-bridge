@@ -2,7 +2,7 @@ import fastify from 'fastify'
 import Helmet from 'fastify-helmet'
 import WebSocket from 'ws'
 import config from './config'
-import pubsub from './pubsub'
+import pubsub, { checkSockets } from './pubsub'
 import { setNotification } from './notification'
 import pkg from '../package.json'
 
@@ -58,6 +58,7 @@ app.post('/subscribe', (req, res) => {
 const wsServer = new WebSocket.Server({ server: app.server })
 
 app.ready(() => {
+  checkSockets()
   wsServer.on('connection', (socket: WebSocket) => {
     socket.on('message', async data => {
       pubsub(socket, data)

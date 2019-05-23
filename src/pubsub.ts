@@ -62,15 +62,27 @@ const PubController = (socketMessage: ISocketMessage) => {
     setPub(socketMessage)
   }
 }
+let disconnected: ISocketSub[] = []
 
-function handleStale (socket: WebSocket) {
-  const matches = subs.filter(subscriber => subscriber.socket === socket)
-  if (matches && matches.length) {
-    matches.forEach((sub: ISocketSub) => {
-      const { socket, topic } = sub
-      pushPending(socket, topic)
+export function checkSockets () {
+  setInterval(() => {
+    subs.forEach((sub: ISocketSub) => {
+      if (sub.socket.readyState !== 1) {
+        disconnected.push(sub)
+      }
     })
-  }
+    const _subs = disconnected
+
+    disconnected = []
+
+    _subs.forEach((sub: ISocketSub) => {
+      if (sub.socket.readyState === 1) {
+        pushPending(sub.socket, sub.topic)
+      } else {
+        disconnected.push(sub)
+      }
+    })
+  }, 1000)
 }
 
 export default (socket: WebSocket, data: WebSocket.Data) => {
@@ -78,7 +90,6 @@ export default (socket: WebSocket, data: WebSocket.Data) => {
 
   if (message) {
     if (message === 'ping') {
-      handleStale(socket)
       if (socket.readyState === 1) {
         socket.send('pong')
       }
