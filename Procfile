@@ -1,1 +1,1 @@
-web: NODE_ENV=production pm2 start ./build --name=bridge
+web: NODE_ENV=production node ./build --name=bridge
