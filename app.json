@@ -1,0 +1,16 @@
+{
+  "name": "WalletConnect Bridge",
+  "description": "WalletConnect",
+  "keywords": [
+    "walletconnect",
+    "ethereum",
+    "blockchain",
+    "mobile"
+  ],
+  "website": "https://walletconnect.org",
+  "repository": "https://github.com/WalletConnect/node-walletconnect-bridge",
+  "addons": [
+    "papertrail"
+  ]
+}
+
